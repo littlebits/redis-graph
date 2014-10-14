@@ -1,20 +1,43 @@
-format = require('util').format
+util = require('util')
+format = util.format
+inspect = util.inspect
 lo = require('lodash')
 a = require('chai').assert
 P = require('bluebird')
 GLOBAL.a = a
-GLOBAL.eq = lo.curry (msg, expected, actual)-> a.deepEqual(actual, expected, msg)
 GLOBAL.db = P.promisifyAll(require('redis')).createClient()
+GLOBAL.sub = P.promisifyAll(require('redis')).createClient()
+GLOBAL.eq = lo.curry (msg, expected, actual)->
+  a.deepEqual(actual, expected, msg)
 
 
 
-a.edge = (spec)->
-  {pid, sid, events} = spec
-  getEdge(spec)
-  .spread (sindex, pindex, edgeData)->
+a.edge = (edge)->
+  {pid, sid, events} = edge
+  getEdge(edge)
+  .spread (sindex, pindex, metadata)->
     a.include sindex, sid, 'SID in PID\'s subscriber index stored in database: subscription subscriber_index'
     a.include pindex, pid, 'PID in SID\'s subscriptions stored in database: subscription subscription_index'
-    eq 'stored in database: subscription', events, edgeData
+    eq 'stored in database: subscription', events, metadata
+
+
+
+a.publishes = (expectedData)->
+  new P (resolve, reject)->
+    published = []
+    countdown = setTimeout((->
+      msg = format('\nExpected social graph changes:\n\n%s\n\nnot published; Meanwhile, other changes that were published:\n\n%s', inspect(expectedData, {depth:100}), published.map((x)->inspect(JSON.parse(x), {depth:100})).join('\n\n'))
+      reject new Error(msg)
+    ), 100)
+    verify = (chan, data)->
+      published.push(data)
+      if (isEqualSets(JSON.parse(data), expectedData))
+        # eq 'Graph changes published', expectedData, JSON.parse(data)
+        clearTimeout(countdown)
+        sub.removeListener('message', verify)
+        resolve(sub.unsubscribeAsync('rsg:changes'))
+    sub.subscribe('rsg:changes')
+    sub.on('message', verify)
 
 
 
@@ -31,24 +54,21 @@ a.noEdge = (link)->
 
 
 a.equalSets = lo.curry (zs, xs)->
-  zs_ = lo.cloneDeep(zs)
-  xs.forEach (x, i)->
-    contains = false
-    zs_.forEach (z, zi)->
-      if contains then return
-      if lo.isEqual(x,z)
-        contains = true
-        zs_.splice(zi,1)
-    if !contains
-      msg = format('\nIs in set but should not be:\n\n%j\n\nExpected set is:\n\n%j\n\nGiven set was:\n\n%j', x, zs,xs)
-      throw new Error(msg)
-  if zs_.length
-    msg = format('\nMissing from set:\n\n%j\n\nExpected set is:\n\n%j\n\nGiven set was:\n\n%j', zs_,zs,xs)
+  if not isEqualSets(zs, xs)
+    msg = format('\nExpected set:\n\n%j\n\nto equal:\n\n%j\n', zs, xs)
     throw new Error(msg)
 
 
 
+
+
+
 # Helpers
+
+isEqualSets = lo.curry (zs, xs)->
+  return lo.any xs, (x)->
+    return lo.any zs, (z)->
+      if lo.isEqual(x, z) then return true
 
 getEdge = (edge)->
   {pid, sid} = edge
