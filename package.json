@@ -1,0 +1,31 @@
+{
+  "name": "redis-social-graph",
+  "version": "1.0.0",
+  "description": "redis-social-graph",
+  "main": "./lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "bluebird": "^2.3.5",
+    "chai": "^1.9.2",
+    "lodash": "^2.4.1",
+    "redis": "^0.12.1"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.8.0"
+  },
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/littlebits/redis-social-graph.git"
+  },
+  "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/littlebits/redis-social-graph/issues"
+  },
+  "homepage": "https://github.com/littlebits/redis-social-graph"
+}
