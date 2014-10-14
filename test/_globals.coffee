@@ -1,16 +1,12 @@
 format = require('util').format
 lo = require('lodash')
-P = require('bluebird')
 a = require('chai').assert
-db = P.promisifyAll(require('redis')).createClient()
+P = require('bluebird')
 GLOBAL.a = a
-GLOBAL.db = db
+GLOBAL.eq = lo.curry (msg, expected, actual)-> a.deepEqual(actual, expected, msg)
+GLOBAL.db = P.promisifyAll(require('redis')).createClient()
 
 
-# extend = require('lodash').extend
-# extend(a, require('../fixtures/assertions-pubsub'))
-GLOBAL.equal = a.deepEqual
-GLOBAL.eq = equal
 
 a.edge = (spec)->
   {pid, sid, events} = spec
@@ -18,7 +14,9 @@ a.edge = (spec)->
   .spread (sindex, pindex, edgeData)->
     a.include sindex, sid, 'SID in PID\'s subscriber index stored in database: subscription subscriber_index'
     a.include pindex, pid, 'PID in SID\'s subscriptions stored in database: subscription subscription_index'
-    eq edgeData, events, 'stored in database: subscription'
+    eq 'stored in database: subscription', events, edgeData
+
+
 
 a.noEdge = (link)->
   # console.log('check noEdge: %j', link)
@@ -30,15 +28,9 @@ a.noEdge = (link)->
     a.notInclude pindex, pid
     a.isNull edgeData, "Destroyed edge"
 
-getEdge = (edge)->
-  {pid, sid} = edge
-  P.all([
-    db.smembersAsync(('pubsub:subscriber_index:' + pid)),
-    db.smembersAsync(('pubsub:subscription_index:' + sid)),
-    db.getAsync(('pubsub:subscription:' + pid + ':' + sid)).then(JSON.parse)
-  ])
 
-GLOBAL.a.equalSets = (xs, zs)->
+
+a.equalSets = lo.curry (zs, xs)->
   zs_ = lo.cloneDeep(zs)
   xs.forEach (x, i)->
     contains = false
@@ -53,3 +45,15 @@ GLOBAL.a.equalSets = (xs, zs)->
   if zs_.length
     msg = format('\nMissing from set:\n\n%j\n\nExpected set is:\n\n%j\n\nGiven set was:\n\n%j', zs_,zs,xs)
     throw new Error(msg)
+
+
+
+# Helpers
+
+getEdge = (edge)->
+  {pid, sid} = edge
+  P.all([
+    db.smembersAsync(('pubsub:subscriber_index:' + pid)),
+    db.smembersAsync(('pubsub:subscription_index:' + sid)),
+    db.getAsync(('pubsub:subscription:' + pid + ':' + sid)).then(JSON.parse)
+  ])

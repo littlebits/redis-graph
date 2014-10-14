@@ -17,10 +17,9 @@ describe 'Graph', ->
 
   describe '.createEdge', ->
     it 'creates a subscription', ->
-      graph.createEdge(mockEdge1)
-      .tap (edge)->
-        eq edge, mockEdge1, 'Returns created edge'
-      .then(a.edge)
+      graph.createEdge mockEdge1
+      .tap eq 'Returns created edge', mockEdge1
+      .then a.edge
 
 
 
@@ -29,8 +28,8 @@ describe 'Graph', ->
 
     it 'returns an edge', ->
       graph
-        .getEdge(mockEdge1)
-        .then (edge)-> eq edge, mockEdge1, 'Returns edge'
+      .getEdge mockEdge1
+      .then eq 'Returns edge', mockEdge1
 
 
 
@@ -40,8 +39,7 @@ describe 'Graph', ->
       edges = [mockEdge1, mockEdge2]
       P.each(edges, graph.createEdge)
       .then -> graph.getTo('a')
-      .then (edgesReturned)->
-        a.equalSets edgesReturned, edges
+      .then a.equalSets edges
 
 
 
@@ -51,15 +49,14 @@ describe 'Graph', ->
       edges = [mockEdge1, mockEdge2]
       P.each(edges, graph.createEdge)
       .then -> graph.getFrom('b')
-      .then (edges)-> equal edges, [mockEdge1]
+      .then eq 'Returns edges', [mockEdge1]
 
 
   describe '.getAll', ->
     it 'returns edges from or to an id', ->
       P.each(mockEdges, graph.createEdge)
       .then -> graph.getAll('a')
-      .then (results)->
-        a.equalSets results, mockEdges
+      .then a.equalSets mockEdges
 
 
 
@@ -70,35 +67,35 @@ describe 'Graph', ->
       P.join(
         graph.getEdges({ any:'a'}),
         graph.getAll('a'),
-        eq
+        eq 'Returns same'
       )
 
     it 'given ID is same as .getAll', ->
       P.join(
         graph.getEdges('a'),
         graph.getAll('a'),
-        eq
+        eq 'Returns same'
       )
 
     it 'given {from} is same as .getFrom', ->
       P.join(
         graph.getEdges({ from: 'a' })
         graph.getFrom('a')
-        eq
+        eq 'Returns same'
       )
 
     it 'given {to} is same as .getTo', ->
       P.join(
         graph.getEdges({ to: 'a' })
         graph.getTo('a')
-        eq
+        eq 'Returns same'
       )
 
     it 'given {to,from} is same as .getEdge', ->
       P.join(
         graph.getEdges({ to: 'a', from:'b' })
         graph.getEdge('a', 'b')
-        eq
+        eq 'Returns same'
       )
 
 
@@ -108,8 +105,7 @@ describe 'Graph', ->
     it 'removes edge from db, returns removed edge', ->
       graph.createEdge(mockEdge1)
       .then -> graph.destroyEdge(mockEdge1)
-      .tap (edge)->
-        eq edge, mockEdge1, 'Returns destroyed edge.'
+      .tap eq 'Returns destroyed edge.', mockEdge1
       .tap a.noEdge
 
 
@@ -119,6 +115,5 @@ describe 'Graph', ->
     it 'destroys all indexes and edges of a node and removes node refs in other nodes\' indexes', ->
       P.each(mockEdges, graph.createEdge)
       .then -> graph.destroyNode('a')
-      .tap (edgesDestroyed)->
-        a.equalSets edgesDestroyed, mockEdges, 'Returns destroyed edges.'
+      .tap a.equalSets mockEdges
       .each(a.noEdge)
