@@ -21,12 +21,14 @@ a.edge = (spec)->
     eq edgeData, events, 'stored in database: subscription'
 
 a.noEdge = (link)->
+  # console.log('check noEdge: %j', link)
   {pid, sid} = link
   getEdge(link)
   .spread (sindex, pindex, edgeData)->
-    a.notInclude sindex, sid "Removed from database: subscription_index: Publisher##{pid} in Subscriber##{sid} index"
-    a.notInclude pindex, pid, "Removed from database: subscriber_index: Subscriber##{pid} in Publisher##{sid} index"
-    a !edgeData, "Removed from database: subscription: Publisher##{pid} Subscriber##{sid}"
+    # console.log('for %j', link, sindex, pindex, edgeData)
+    a.notInclude sindex, sid
+    a.notInclude pindex, pid
+    a.isNull edgeData, "Destroyed edge"
 
 getEdge = (edge)->
   {pid, sid} = edge

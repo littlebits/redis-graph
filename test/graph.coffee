@@ -18,9 +18,9 @@ describe 'Graph', ->
   describe '.createEdge', ->
     it 'creates a subscription', ->
       graph.createEdge(mockEdge1)
-      .then (edge)->
-        eq edge, mockEdge1, 'Returns created edge.'
-        a.edge edge
+      .tap (edge)->
+        eq edge, mockEdge1, 'Returns created edge'
+      .then(a.edge)
 
 
 
@@ -29,8 +29,8 @@ describe 'Graph', ->
 
     it 'returns an edge', ->
       graph
-        .getEdge({ sid:'a', pid:'b' })
-        .then((edge)-> eq edge, mockEdge1)
+        .getEdge(mockEdge1)
+        .then (edge)-> eq edge, mockEdge1, 'Returns edge'
 
 
 
@@ -50,9 +50,8 @@ describe 'Graph', ->
     it 'returns all edges from node', ->
       edges = [mockEdge1, mockEdge2]
       P.each(edges, graph.createEdge)
-      graph
-        .getFrom('b')
-        .then (edges)-> equal edges, [mockEdge1]
+      .then -> graph.getFrom('b')
+      .then (edges)-> equal edges, [mockEdge1]
 
 
   describe '.getAll', ->
@@ -108,10 +107,10 @@ describe 'Graph', ->
 
     it 'removes edge from db, returns removed edge', ->
       graph.createEdge(mockEdge1)
-      .then -> graph.destroyEdge({ sid:'a', pid:'b' })
-      .then (edge)->
-        eq edge, mockEdge1, 'Returns removed edge'
-        a.noEdge({ sid:a, pid:'b' })
+      .then -> graph.destroyEdge(mockEdge1)
+      .tap (edge)->
+        eq edge, mockEdge1, 'Returns destroyed edge.'
+      .tap a.noEdge
 
 
 
@@ -120,8 +119,6 @@ describe 'Graph', ->
     it 'destroys all indexes and edges of a node and removes node refs in other nodes\' indexes', ->
       P.each(mockEdges, graph.createEdge)
       .then -> graph.destroyNode('a')
-      .then (edgesDestroyed)->
-        a.equalSets edgesDestroyed, mockEdges, 'Edges were destroyed.'
-      .then -> graph.getAll('a')
-      .then -> (results)->
-        eq results, [], 'No edges related to node "a".'
+      .tap (edgesDestroyed)->
+        a.equalSets edgesDestroyed, mockEdges, 'Returns destroyed edges.'
+      .each(a.noEdge)
