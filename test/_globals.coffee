@@ -13,12 +13,12 @@ GLOBAL.eq = lo.curry (msg, expected, actual)->
 
 
 a.edge = (edge)->
-  {pid, sid, events} = edge
+  {pid, sid, data} = edge
   getEdge(edge)
   .spread (sindex, pindex, metadata)->
     a.include sindex, sid, 'SID in PID\'s subscriber index stored in database: subscription subscriber_index'
     a.include pindex, pid, 'PID in SID\'s subscriptions stored in database: subscription subscription_index'
-    eq 'stored in database: subscription', events, metadata
+    eq 'stored in database: subscription', data, metadata
 
 
 

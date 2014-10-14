@@ -8,9 +8,9 @@ describe 'Graph', ->
   afterEach -> db.flushdbAsync()
   beforeEach ->
     graph = Graph({ db:db })
-    mockEdge1 = {sid:'a', pid:'b', events:'foodata'}
-    mockEdge2 = {sid:'a', pid:'c', events:'zeddata'}
-    mockEdge3 = {sid:'b', pid:'a', events:'bardata'}
+    mockEdge1 = {sid:'a', pid:'b', data:'foodata'}
+    mockEdge2 = {sid:'a', pid:'c', data:'zeddata'}
+    mockEdge3 = {sid:'b', pid:'a', data:'bardata'}
     mockEdges = [mockEdge1, mockEdge2, mockEdge3]
 
 
@@ -28,7 +28,7 @@ describe 'Graph', ->
   describe '.updateEdge', ->
     beforeEach -> P.join(graph.createEdge(mockEdge1))
     it 'Mutates the metadata of an edge', ->
-      edge1_ = {sid:'a', pid:'b', events:'something-else'}
+      edge1_ = {sid:'a', pid:'b', data:'something-else'}
       updates = graph
       .updateEdge edge1_
       .tap eq 'Returns updated edge', edge1_
