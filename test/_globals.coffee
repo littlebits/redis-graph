@@ -73,7 +73,7 @@ isEqualSets = lo.curry (zs, xs)->
 getEdge = (edge)->
   {pid, sid} = edge
   P.all([
-    db.smembersAsync(('pubsub:subscriber_index:' + pid)),
-    db.smembersAsync(('pubsub:subscription_index:' + sid)),
-    db.getAsync(('pubsub:subscription:' + pid + ':' + sid)).then(JSON.parse)
+    db.smembersAsync('rsg:from:' + pid),
+    db.smembersAsync('rsg:to:' + sid),
+    db.getAsync(('rsg:from:to:' + pid + ':' + sid)).then(JSON.parse)
   ])
