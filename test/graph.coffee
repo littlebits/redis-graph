@@ -8,9 +8,9 @@ describe 'Graph', ->
   afterEach -> db.flushdbAsync()
   beforeEach ->
     graph = Graph({ db:db })
-    mockEdge1 = {sid:'a', pid:'b', data:'foodata'}
-    mockEdge2 = {sid:'a', pid:'c', data:'zeddata'}
-    mockEdge3 = {sid:'b', pid:'a', data:'bardata'}
+    mockEdge1 = {sid:'a', pid:'b', data:foo:'foodata'}
+    mockEdge2 = {sid:'a', pid:'c', data:foo:'zeddata'}
+    mockEdge3 = {sid:'b', pid:'a', data:foo:'bardata'}
     mockEdges = [mockEdge1, mockEdge2, mockEdge3]
 
 
@@ -83,16 +83,16 @@ describe 'Graph', ->
       P.join graph.getEdges('a'), graph.getAll('a')
       .then eq 'Returns same'
 
-    it 'given {from} is same as .getFrom', ->
-      P.join graph.getEdges({ from: 'a' }), graph.getFrom('a')
+    it 'given {pid} is same as .getFrom', ->
+      P.join graph.getEdges({ pid: 'a' }), graph.getFrom('a')
       .then eq 'Returns same'
 
-    it 'given {to} is same as .getTo', ->
-      P.join graph.getEdges({ to: 'a' }), graph.getTo('a')
+    it 'given {sid} is same as .getTo', ->
+      P.join graph.getEdges({ sid: 'a' }), graph.getTo('a')
       .then eq 'Returns same'
 
-    it 'given {to,from} is same as .getEdge', ->
-      P.join graph.getEdges({ to: 'a', from:'b' }), graph.getEdge('a', 'b')
+    it 'given {sid,pid} is same as .getEdge', ->
+      P.join graph.getEdges({ sid: 'a', pid:'b' }), graph.getEdge('a', 'b')
       .then eq 'Returns same'
 
 
