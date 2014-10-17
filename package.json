@@ -9,6 +9,7 @@
   "dependencies": {
     "bluebird": "^2.3.5",
     "chai": "^1.9.2",
+    "joi": "^4.7.0",
     "lodash": "^2.4.1",
     "redis": "^0.12.1"
   },
