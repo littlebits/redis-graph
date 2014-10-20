@@ -75,5 +75,5 @@ getEdge = (edge)->
   P.all([
     db.smembersAsync('rsg:from:' + pid),
     db.smembersAsync('rsg:to:' + sid),
-    db.getAsync(('rsg:from:to:' + pid + ':' + sid)).then(JSON.parse)
+    db.getAsync(('rsg:fromto:' + pid + ':' + sid)).then(JSON.parse)
   ])
