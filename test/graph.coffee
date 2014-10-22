@@ -97,9 +97,9 @@ describe 'Graph', ->
       P.join graph.getEdges({ sid: 'a' }), graph.getTo('a')
       .spread eq 'Returns same'
 
-    it 'given {sid,pid} is same as .getEdge', ->
+    it 'given {sid,pid} is same as .getEdge except in array', ->
       P.join graph.getEdges({ sid: 'a', pid:'b' }), graph.getEdge('a', 'b')
-      .spread eq 'Returns same'
+      .spread (xs, x)-> eq 'Returns same', xs, [x]
 
 
 
