@@ -18,7 +18,8 @@
     "mocha": "^1.21.5"
   },
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register"
+    "test": "mocha --compilers coffee:coffee-script/register",
+    "start": "mocha --compilers coffee:coffee-script/register --watch"
   },
   "repository": {
     "type": "git",

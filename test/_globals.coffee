@@ -35,8 +35,8 @@ a.publishes = (expectedData)->
         # eq 'Graph changes published', expectedData, JSON.parse(data)
         clearTimeout(countdown)
         sub.removeListener('message', verify)
-        resolve(sub.unsubscribeAsync('rsg:changes'))
-    sub.subscribe('rsg:changes')
+        resolve(sub.unsubscribeAsync('graph:changes'))
+    sub.subscribe('graph:changes')
     sub.on('message', verify)
 
 
@@ -73,7 +73,7 @@ isEqualSets = lo.curry (zs, xs)->
 getEdge = (edge)->
   {pid, sid} = edge
   P.all([
-    db.smembersAsync('rsg:from:' + pid),
-    db.smembersAsync('rsg:to:' + sid),
-    db.getAsync(('rsg:fromto:' + pid + ':' + sid)).then(JSON.parse)
+    db.smembersAsync('graph:from:' + pid),
+    db.smembersAsync('graph:to:' + sid),
+    db.getAsync(('graph:fromto:' + pid + ':' + sid)).then(JSON.parse)
   ])

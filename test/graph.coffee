@@ -16,27 +16,31 @@ describe 'Graph', ->
 
 
   describe '.createEdge', ->
+
     it 'creates a subscription', ->
       creation = graph
       .createEdge mockEdge1
       .tap eq 'Returns created edge', mockEdge1
       .then a.edge
-      P.join(creation, a.publishes([before:null, after:mockEdge1]))
+      P.join creation, a.publishes([before:null, after:mockEdge1])
 
 
 
   describe '.updateEdge', ->
-    beforeEach -> P.join(graph.createEdge(mockEdge1))
+    beforeEach -> P.join graph.createEdge(mockEdge1)
+
     it 'Mutates the metadata of an edge', ->
       edge1_ = {sid:'a', pid:'b', data:'something-else'}
       updates = graph
       .updateEdge edge1_
       .tap eq 'Returns updated edge', edge1_
       .then a.edge
-      P.join(updates, a.publishes([before:mockEdge1, after:edge1_]))
+      P.join updates, a.publishes([before:mockEdge1, after:edge1_])
+
+
 
   describe '.getEdge', ->
-    beforeEach -> P.each(mockEdges, graph.createEdge)
+    beforeEach -> P.each mockEdges, graph.createEdge
 
     it 'returns an edge', ->
       graph
@@ -64,7 +68,9 @@ describe 'Graph', ->
       .then eq 'Returns edges', [mockEdge1]
 
 
+
   describe '.getAll', ->
+
     it 'returns edges from or to an id', ->
       P.each mockEdges, graph.createEdge
       .then -> graph.getAll('a')
@@ -77,23 +83,23 @@ describe 'Graph', ->
 
     it 'given {any} is same as .getAll', ->
       P.join graph.getEdges({ any:'a'}), graph.getAll('a')
-      .then eq 'Returns same'
+      .spread eq 'Returns same'
 
     it 'given ID is same as .getAll', ->
       P.join graph.getEdges('a'), graph.getAll('a')
-      .then eq 'Returns same'
+      .spread eq 'Returns same'
 
     it 'given {pid} is same as .getFrom', ->
       P.join graph.getEdges({ pid: 'a' }), graph.getFrom('a')
-      .then eq 'Returns same'
+      .spread eq 'Returns same'
 
     it 'given {sid} is same as .getTo', ->
       P.join graph.getEdges({ sid: 'a' }), graph.getTo('a')
-      .then eq 'Returns same'
+      .spread eq 'Returns same'
 
     it 'given {sid,pid} is same as .getEdge', ->
       P.join graph.getEdges({ sid: 'a', pid:'b' }), graph.getEdge('a', 'b')
-      .then eq 'Returns same'
+      .spread eq 'Returns same'
 
 
 
@@ -104,7 +110,7 @@ describe 'Graph', ->
       .then -> graph.destroyEdge(mockEdge1)
       .tap eq 'Returns destroyed edge.', mockEdge1
       .tap a.noEdge
-      P.join(destroying, a.publishes([ before: mockEdge1, after:null ]))
+      P.join destroying, a.publishes([ before: mockEdge1, after:null ])
 
 
 
@@ -116,4 +122,4 @@ describe 'Graph', ->
       .then -> graph.destroyNode('a')
       .tap a.equalSets mockEdges
       .each a.noEdge
-      P.join(destroying, a.publishes(mockEdges.map((before)-> before:before, after:null )))
+      P.join destroying, a.publishes(mockEdges.map((before)-> before:before, after:null ))
