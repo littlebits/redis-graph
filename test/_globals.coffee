@@ -5,11 +5,15 @@ lo = require('lodash')
 a = require('chai').assert
 P = require('bluebird')
 GLOBAL.a = a
+GLOBAL.lo = lo
+GLOBAL.Promise = P
 GLOBAL.db = P.promisifyAll(require('redis')).createClient()
 GLOBAL.sub = P.promisifyAll(require('redis')).createClient()
 GLOBAL.eq = lo.curry (msg, expected, actual)->
   a.deepEqual(actual, expected, msg)
 
+GLOBAL.promiseError = (p)->
+  p.then -> throw new Error 'Promise did not have an error.'
 
 
 a.edge = (edge)->

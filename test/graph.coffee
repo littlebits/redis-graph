@@ -8,9 +8,9 @@ describe 'Graph', ->
   afterEach -> db.flushdbAsync()
   beforeEach ->
     graph = Graph({ db:db })
-    mockEdge1 = {sid:'a', pid:'b', data:foo:'foodata'}
-    mockEdge2 = {sid:'a', pid:'c', data:foo:'zeddata'}
-    mockEdge3 = {sid:'b', pid:'a', data:foo:'bardata'}
+    mockEdge1 = sid:'a', pid:'b', data:foo:'foodata'
+    mockEdge2 = sid:'a', pid:'c', data:foo:'zeddata'
+    mockEdge3 = sid:'b', pid:'a', data:foo:'bardata'
     mockEdges = [mockEdge1, mockEdge2, mockEdge3]
 
 
@@ -46,6 +46,31 @@ describe 'Graph', ->
       graph
       .getEdge mockEdge1
       .then eq 'Returns edge', mockEdge1
+   
+
+  describe 'possible errors are', ->
+    
+    noNodeFnames = ['getFrom', 'getTo', 'destroyNode', 'getAll']
+
+    it "#{noNodeFnames.join(', ')} all require the node to exist", ->
+      methods = lo.pick graph, noNodeFnames
+      args = ['foo-id']
+      code = 'REDIS_GRAPH_NO_SUCH_NODE'
+
+      Promise.all lo.map methods, (method, name)->
+        promiseError method args...
+        .catch (err)-> eq "'#{name}' returns #{code} error", err.code, code
+
+    noEdgeFnames = ['destroyEdge', 'updateEdge']
+
+    it "#{noEdgeFnames.join(', ')} all require an edge to exist", ->
+      fs = lo.pick graph, noEdgeFnames
+      args = [pid: 'foo', sid: 'bar']
+      code = 'REDIS_GRAPH_NO_SUCH_EDGE'
+
+      Promise.all lo.map fs, (method, name)->
+        promiseError method args...
+        .catch (err)-> eq "'#{name}' returns #{code} error", err.code, code
 
 
 
@@ -123,3 +148,4 @@ describe 'Graph', ->
       .tap a.equalSets mockEdges
       .each a.noEdge
       P.join destroying, a.publishes(mockEdges.map((before)-> before:before, after:null ))
+
