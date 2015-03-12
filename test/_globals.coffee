@@ -45,9 +45,16 @@ a.publishes = (expectedData)->
 
 
 
+a.noNode = (id)->
+  db
+  .existsAsync("graph:node:#{id}")
+  .then(Boolean)
+  .then (exists)->
+    a.isFalse exists
+
 a.noEdge = (link)->
   # console.log('check noEdge: %j', link)
-  {pid, sid} = link
+  { pid, sid } = link
   getEdge(link)
   .spread (sindex, pindex, edgeData)->
     # console.log('for %j', link, sindex, pindex, edgeData)

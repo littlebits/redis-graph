@@ -5,29 +5,39 @@ Graph = require('../lib/index')
 
 describe 'Graph', ->
   graph = mockEdge1 = mockEdge2 = mockEdge3 = mockEdges = undefined
-  afterEach -> db.flushdbAsync()
+
+  afterEach ->
+    db.flushdbAsync()
+
   beforeEach ->
-    graph = Graph({ db:db })
+    graph = Graph db: db
     mockEdge1 = sid:'a', pid:'b', data:foo:'foodata'
     mockEdge2 = sid:'a', pid:'c', data:foo:'zeddata'
     mockEdge3 = sid:'b', pid:'a', data:foo:'bardata'
     mockEdges = [mockEdge1, mockEdge2, mockEdge3]
+    @mockCreate = (spec)->
+      Promise.join(
+        graph.forceCreateNode spec.sid
+        graph.forceCreateNode spec.pid
+        graph.createEdge spec
+      )
+      .get 2
 
 
 
   describe '.createEdge', ->
 
     it 'creates a subscription', ->
-      creation = graph
-      .createEdge mockEdge1
+      creation = @mockCreate mockEdge1
       .tap eq 'Returns created edge', mockEdge1
       .then a.edge
+
       P.join creation, a.publishes([before:null, after:mockEdge1])
 
 
 
   describe '.updateEdge', ->
-    beforeEach -> P.join graph.createEdge(mockEdge1)
+    beforeEach -> @mockCreate mockEdge1
 
     it 'Mutates the metadata of an edge', ->
       edge1_ = {sid:'a', pid:'b', data:'something-else'}
@@ -40,13 +50,20 @@ describe 'Graph', ->
 
 
   describe '.getEdge', ->
-    beforeEach -> P.each mockEdges, graph.createEdge
+    beforeEach -> P.each mockEdges, @mockCreate
 
     it 'returns an edge', ->
       graph
       .getEdge mockEdge1
       .then eq 'Returns edge', mockEdge1
    
+  describe 'forceCreateNode', ->
+
+    it 'creates a graph node', ->
+      graph.forceCreateNode 'a'
+      .tap eq 'returns the graph node', 'a'
+      .then -> db.existsAsync 'graph:node:a'
+      .then eq 'graph node created', 1
 
   describe 'possible errors are', ->
     
@@ -75,21 +92,23 @@ describe 'Graph', ->
 
 
   describe '.getTo', ->
+    beforeEach ->
+      @edges = [mockEdge1, mockEdge2]
+      P.each @edges, @mockCreate
 
     it 'returns edges where given id is the subscriber', ->
-      edges = [mockEdge1, mockEdge2]
-      P.each edges, graph.createEdge
-      .then -> graph.getTo('a')
-      .then a.equalSets edges
+      graph.getTo 'a'
+      .then a.equalSets @edges
 
 
 
   describe '.getFrom', ->
+    beforeEach ->
+      @edges = [mockEdge1, mockEdge2]
+      P.each @edges, @mockCreate
 
     it 'returns all edges from node', ->
-      edges = [mockEdge1, mockEdge2]
-      P.each edges, graph.createEdge
-      .then -> graph.getFrom('b')
+      graph.getFrom 'b'
       .then eq 'Returns edges', [mockEdge1]
 
 
@@ -97,14 +116,14 @@ describe 'Graph', ->
   describe '.getAll', ->
 
     it 'returns edges from or to an id', ->
-      P.each mockEdges, graph.createEdge
-      .then -> graph.getAll('a')
+      P.each mockEdges, @mockCreate
+      .then -> graph.getAll 'a'
       .then a.equalSets mockEdges
 
 
 
   describe '.getEdges', ->
-    beforeEach -> P.each(mockEdges, graph.createEdge)
+    beforeEach -> P.each mockEdges, @mockCreate
 
     it 'given {any} is same as .getAll', ->
       P.join graph.getEdges({ any:'a'}), graph.getAll('a')
@@ -143,9 +162,12 @@ describe 'Graph', ->
   describe '.destroyNode', ->
 
     it 'destroys all indexes and edges of a node and removes node refs in other nodes\' indexes, returns removed edges', ->
-      destroying = P.each(mockEdges, graph.createEdge)
-      .then -> graph.destroyNode('a')
+      id = 'a'
+      destroying = P.each mockEdges, @mockCreate
+      .then -> graph.destroyNode id
       .tap a.equalSets mockEdges
+      .tap -> a.noNode id
       .each a.noEdge
+
       P.join destroying, a.publishes(mockEdges.map((before)-> before:before, after:null ))
 
