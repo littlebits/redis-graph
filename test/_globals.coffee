@@ -45,12 +45,18 @@ a.publishes = (expectedData)->
 
 
 
+a.node = (id)->
+  db
+  .existsAsync("graph:node:#{id}")
+  .then(Boolean)
+  .tap (exists)-> a.isTrue exists, 'node exists'
+
 a.noNode = (id)->
   db
   .existsAsync("graph:node:#{id}")
   .then(Boolean)
   .then (exists)->
-    a.isFalse exists
+    a.isFalse exists, 'node does not exist'
 
 a.noEdge = (link)->
   # console.log('check noEdge: %j', link)

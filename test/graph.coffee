@@ -1,5 +1,5 @@
-P = require('bluebird')
-Graph = require('../lib/index')
+P = require 'bluebird'
+Graph = require '../lib/index'
 
 
 
@@ -16,12 +16,7 @@ describe 'Graph', ->
     mockEdge3 = sid:'b', pid:'a', data:foo:'bardata'
     mockEdges = [mockEdge1, mockEdge2, mockEdge3]
     @mockCreate = (spec)->
-      Promise.join(
-        graph.forceCreateNode spec.sid
-        graph.forceCreateNode spec.pid
-        graph.createEdge spec
-      )
-      .get 2
+      graph.forceCreateEdge spec
 
 
 
@@ -56,7 +51,18 @@ describe 'Graph', ->
       graph
       .getEdge mockEdge1
       .then eq 'Returns edge', mockEdge1
-   
+  
+
+
+  describe 'forceCreateEdge', ->
+
+    it 'creates an edge and if necessary the nodes', ->
+      graph.forceCreateEdge pid: 'x', sid: 'y', data: {}
+      .tap -> a.node 'x'
+      .tap -> a.node 'y'
+
+
+
   describe 'forceCreateNode', ->
 
     it 'creates a graph node', ->
@@ -155,7 +161,6 @@ describe 'Graph', ->
       .tap eq 'Returns destroyed edge.', mockEdge1
       .tap a.noEdge
       P.join destroying, a.publishes([ before: mockEdge1, after:null ])
-
 
 
 
