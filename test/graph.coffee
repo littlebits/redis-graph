@@ -51,7 +51,7 @@ describe 'Graph', ->
       graph
       .getEdge mockEdge1
       .then eq 'Returns edge', mockEdge1
-  
+
 
 
   describe 'forceCreateEdge', ->
@@ -71,9 +71,26 @@ describe 'Graph', ->
       .then -> db.existsAsync 'graph:node:a'
       .then eq 'graph node created', 1
 
+
+
   describe 'possible errors are', ->
-    
+
     noNodeFnames = ['getFrom', 'getTo', 'destroyNode', 'getAll']
+
+    it 'createEdge requires that the publisher node exists', ->
+      graph.forceCreateNode 'b'
+      .then -> promiseError graph.createEdge pid: 'a', sid: 'b', data: {}
+      .catch (err)->
+        a err.message.match /unknown publisher "a"\.$/
+
+    it 'createEdge requires that the subscriber node exists', ->
+      graph.forceCreateNode 'a'
+      .then -> promiseError graph.createEdge pid: 'a', sid: 'b', data: {}
+      .catch (err)-> a err.message.match /unknown subscriber "b"\.$/
+
+    it 'createEdge requires that both publisher/subscriber nodes exist', ->
+      promiseError graph.createEdge pid: 'a', sid: 'b', data: {}
+      .catch (err)-> a err.message.match /unknown publisher "a" .* unknown subscriber "b"\.$/
 
     it "#{noNodeFnames.join(', ')} all require the node to exist", ->
       methods = lo.pick graph, noNodeFnames
@@ -156,7 +173,7 @@ describe 'Graph', ->
   describe '.destroyEdge', ->
 
     it 'removes edge from db, returns removed edge', ->
-      destroying = graph.createEdge(mockEdge1)
+      destroying = graph.forceCreateEdge(mockEdge1)
       .then -> graph.destroyEdge(mockEdge1)
       .tap eq 'Returns destroyed edge.', mockEdge1
       .tap a.noEdge
