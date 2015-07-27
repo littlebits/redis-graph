@@ -9,7 +9,7 @@
     "bluebird": "^2.3.5",
     "chai": "^1.9.2",
     "eslint-config-littlebits": "0.0.1",
-    "joi": "^4.7.0",
+    "joi": "^6.6.1",
     "lodash": "^2.4.1",
     "ramda": "^0.17.1",
     "redis": "^0.12.1"
