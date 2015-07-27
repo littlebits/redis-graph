@@ -1,15 +1,16 @@
+require 'babel/register'
 util = require('util')
-format = util.format
-inspect = util.inspect
+{ format, inspect } = util
 lo = require('lodash')
 a = require('chai').assert
 P = require('bluebird')
-GLOBAL.a = a
-GLOBAL.lo = lo
-GLOBAL.Promise = P
-GLOBAL.db = P.promisifyAll(require('redis')).createClient()
-GLOBAL.sub = P.promisifyAll(require('redis')).createClient()
-GLOBAL.eq = lo.curry (msg, expected, actual)->
+G = GLOBAL
+G.a = a
+G.lo = lo
+G.Promise = P
+G.db = P.promisifyAll(require('redis')).createClient()
+G.sub = P.promisifyAll(require('redis')).createClient()
+G.eq = lo.curry (msg, expected, actual)->
   a.deepEqual(actual, expected, msg)
 
 GLOBAL.promiseError = (p)->

@@ -2,7 +2,8 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
-    "start": "mocha --compilers coffee:coffee-script/register --watch"
+    "start": "mocha --compilers coffee:coffee-script/register --watch",
+    "dev": "npm start"
   },
   "dependencies": {
     "bluebird": "^2.3.5",
@@ -10,6 +11,7 @@
     "eslint-config-littlebits": "0.0.1",
     "joi": "^4.7.0",
     "lodash": "^2.4.1",
+    "ramda": "^0.17.1",
     "redis": "^0.12.1"
   },
   "repository": {
@@ -26,6 +28,7 @@
   "main": "./lib/index.js",
   "description": "CRUD actions against a graph model built on top of Redis",
   "devDependencies": {
+    "babel": "^5.8.9",
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.5"
   },
