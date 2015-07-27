@@ -1,0 +1,19 @@
+image:https://circleci.com/gh/littlebits/redis-graph.svg?style=svg["Circle CI", link="https://circleci.com/gh/littlebits/redis-graph"]
+
+
+
+# Redis Graph
+CRUD actions against a graph model built on top of Redis.
+
+:toc: macro
+:toc-title:
+:toclevels: 99
+toc::[]
+
+
+
+## Installation
+
+```
+npm install --save @littlebits/redis-graph
+```
