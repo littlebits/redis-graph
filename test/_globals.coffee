@@ -30,7 +30,7 @@ a.publishes = (expectedData)->
   new P (resolve, reject)->
     published = []
     countdown = setTimeout((->
-      msg = format('\nExpected social graph changes:\n\n%s\n\nnot published; Meanwhile, other changes that were published:\n\n%s', inspect(expectedData, {depth:100}), published.map((x)->inspect(JSON.parse(x), {depth:100})).join('\n\n'))
+      msg = format('\nExpected graph changes:\n\n%s\n\nnot published; Meanwhile, other changes that were published:\n\n%s', inspect(expectedData, {depth:100}), published.map((x)->inspect(JSON.parse(x), {depth:100})).join('\n\n'))
       reject new Error(msg)
     ), 100)
     verify = (chan, data)->

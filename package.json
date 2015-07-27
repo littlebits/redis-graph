@@ -14,22 +14,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/littlebits/redis-social-graph.git"
+    "url": "https://github.com/littlebits/redis-graph.git"
   },
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
-  "name": "redis-social-graph",
+  "name": "@littlebits/redis-graph",
   "directories": {
     "test": "test"
   },
-  "homepage": "https://github.com/littlebits/redis-social-graph",
+  "homepage": "https://github.com/littlebits/redis-graph",
   "version": "0.5.0",
   "main": "./lib/index.js",
-  "description": "redis-social-graph",
+  "description": "CRUD actions against a graph model built on top of Redis",
   "devDependencies": {
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.5"
   },
   "bugs": {
-    "url": "https://github.com/littlebits/redis-social-graph/issues"
+    "url": "https://github.com/littlebits/redis-graph/issues"
   }
 }
