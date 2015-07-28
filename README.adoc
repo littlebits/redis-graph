@@ -1,6 +1,6 @@
 image:https://circleci.com/gh/littlebits/redis-graph.svg?style=svg["Circle CI", link="https://circleci.com/gh/littlebits/redis-graph"]
 
-# Redis Graph 
+# Redis Graph
 CRUD actions against a graph model built on top of Redis.
 
 :toc: macro
@@ -19,3 +19,43 @@ toc::[]
 ```
 npm install --save @littlebits/redis-graph
 ```
+
+## API
+### `export default` `Graph :: RedisConnection -> GraphAPI`
+
+`RedisConnection` :: An instance of `ioredis`.
+
+`GraphAPI` :: An API object of all the graph functions that will use the given redis connection.
+
+---
+
+#### `forceCreateNode :: ID -> ID`
+
+#### `forceCreateEdge :: Edge -> Edge`
+
+#### `createEdge :: Edge -> Edge`
+
+#### `updateEdge :: Edge -> Promise Edge`
+
+#### `getEdges :: NodeExp -> Promise [Edge]`
+
+NodeExp type:
+
+`{ any: ID }` :: Get all edges where node of `ID` is the publisher or the subscriber.
+`{ pid: ID }` :: Get all edges where node of `ID` is the publisher.
+`{ sid: ID }` :: Get all edges where node of `ID` is the subscriber.
+`{ sid: ID1, pid: ID2 }` :: Get the edge where node `ID1` is subscribed to node `ID2`.
+
+---
+
+#### `getEdge :: SID, PID -> Promise Edge`
+
+#### `getFrom :: PID -> Promise [Edge]`
+
+#### `getTo :: SID -> Promise [Edge]`
+
+#### `getAll :: ID -> Promise [Edge]`
+
+#### `destroyEdge :: SID, PID -> Promise Edge`
+
+#### `destroyNode :: ID -> Promise [Edge]`
