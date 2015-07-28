@@ -36,56 +36,56 @@ Using the endpoints in the given edge create an edge between them using the give
 
 #### createStrict
 ----
-createStrict :: Edge -> Promise Edge
+createStrict :: Edge -> Promise (Edge | ErrorNoSuchEndpoint)
 ----
 
-Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead and error is thrown if either does not exist.
+Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist.
 
 #### getBetween
 ----
-getBetween :: SID, PID -> Promise Edge
+getBetween :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 Returns the edge between the given endpoints.
 
 #### getFrom
 ----
-getFrom :: PID -> Promise [Edge]
+getFrom :: PID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in publisher position.
 
 #### getTo
 ----
-getTo :: SID -> Promise [Edge]
+getTo :: SID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in subscriber position.
 
 #### getAll
 ----
-getAll :: ID -> Promise [Edge]
+getAll :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in either subscriber or publisher position.
 
 #### update
 ----
-update :: Edge -> Promise Edge
+update :: Edge -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data.
 
 #### destroy
 ----
-destroy :: SID, PID -> Promise Edge
+destroy :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 Returns the destroyed edge.
 
 #### endpointDestroy
 ----
-endpointDestroy :: ID -> Promise [Edge]
+endpointDestroy :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all the edges that were destroyed.
@@ -94,6 +94,8 @@ Returns all the edges that were destroyed.
 ----
 endpointCreate :: ID -> Promise ID
 ----
+
+Creating endpoints is idempotent so no error is thrown if it already exists.
 
 ## Types
 
@@ -111,4 +113,16 @@ String
   pid: String
   data: {}
 }
+```
+
+#### ErrorNoSuchEdge
+```
+message: String
+code: 'REDIS_GRAPH_NO_SUCH_EDGE'
+```
+
+#### ErrorNoSuchEndpoint
+```
+message: String
+code: 'REDIS_GRAPH_NO_SUCH_ENDPOINT'
 ```

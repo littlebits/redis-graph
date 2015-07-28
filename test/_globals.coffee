@@ -53,7 +53,7 @@ a.node = (id)->
   redis
   .exists("graph:node:#{id}")
   .then(Boolean)
-  .tap (exists)-> a.isTrue exists, 'node exists'
+  .tap (exists)-> a.isTrue exists, 'endpoint exists'
 
 a.noNode = (id)->
   redis

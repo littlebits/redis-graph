@@ -95,7 +95,7 @@ describe 'Graph', ->
     it "#{noNodeFnames.join(', ')} all require the node to exist", ->
       methods = lo.pick graph, noNodeFnames
       args = ['foo-id']
-      code = 'REDIS_GRAPH_NO_SUCH_NODE'
+      code = 'REDIS_GRAPH_NO_SUCH_ENDPOINT'
 
       Promise.all lo.map methods, (method, name)->
         promiseError method args...
