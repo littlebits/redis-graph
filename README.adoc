@@ -10,10 +10,6 @@ toc::[]
 
 
 
-
-
-
-
 ## Installation
 
 ```
@@ -21,23 +17,39 @@ npm install --save @littlebits/redis-graph
 ```
 
 ## API
-### `export default` `Graph :: RedisConnection -> GraphAPI`
+### `export default` Graph
+----
+Graph :: RedisConnection -> GraphAPI
+----
 
 `RedisConnection` :: An instance of `ioredis`.
 
 `GraphAPI` :: An API object of all the graph functions that will use the given redis connection.
 
----
+#### forceCreateNode
+----
+forceCreateNode :: ID -> Promise ID
+----
 
-#### `forceCreateNode :: ID -> ID`
+#### forceCreateEdge
+----
+forceCreateEdge :: Edge -> Promise Edge
+----
 
-#### `forceCreateEdge :: Edge -> Edge`
+#### createEdge
+----
+createEdge :: Edge -> Promise Edge
+----
 
-#### `createEdge :: Edge -> Edge`
+#### updateEdge
+----
+`updateEdge :: Edge -> Promise Edge`
+----
 
-#### `updateEdge :: Edge -> Promise Edge`
-
-#### `getEdges :: NodeExp -> Promise [Edge]`
+#### getEdges
+----
+getEdges :: NodeExp -> Promise [Edge]
+----
 
 NodeExp type:
 
@@ -46,16 +58,34 @@ NodeExp type:
 `{ sid: ID }` :: Get all edges where node of `ID` is the subscriber.
 `{ sid: ID1, pid: ID2 }` :: Get the edge where node `ID1` is subscribed to node `ID2`.
 
----
 
-#### `getEdge :: SID, PID -> Promise Edge`
 
-#### `getFrom :: PID -> Promise [Edge]`
+#### getEdge
+----
+getEdge :: SID, PID -> Promise Edge
+----
 
-#### `getTo :: SID -> Promise [Edge]`
+#### getFrom
+----
+getFrom :: PID -> Promise [Edge]
+----
 
-#### `getAll :: ID -> Promise [Edge]`
+#### getTo
+----
+getTo :: SID -> Promise [Edge]
+----
 
-#### `destroyEdge :: SID, PID -> Promise Edge`
+#### getAll
+----
+getAll :: ID -> Promise [Edge]
+----
 
-#### `destroyNode :: ID -> Promise [Edge]`
+#### destroyEdge
+----
+destroyEdge :: SID, PID -> Promise Edge
+----
+
+#### destroyNode
+----
+destroyNode :: ID -> Promise [Edge]
+----
