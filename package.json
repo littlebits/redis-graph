@@ -3,7 +3,10 @@
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
     "start": "mocha --compilers coffee:coffee-script/register --watch",
-    "dev": "npm start"
+    "dev": "npm start",
+    "build": "rm -rf build && babel --out-dir build lib",
+    "postversion": "npm publish",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "bluebird": "^2.3.5",
@@ -25,7 +28,7 @@
   },
   "homepage": "https://github.com/littlebits/redis-graph",
   "version": "0.5.0",
-  "main": "./lib/index.js",
+  "main": "./build/index.js",
   "description": "CRUD actions against a graph model built on top of Redis",
   "devDependencies": {
     "babel": "^5.8.9",
