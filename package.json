@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bluebird": "^2.3.5",
+    "ramda": "^0.17.1",
     "joi": "^6.6.1"
   },
   "repository": {
@@ -28,7 +29,6 @@
   "devDependencies": {
     "eslint-config-littlebits": "0.0.1",
     "chai": "^1.9.2",
-    "ramda": "^0.17.1",
     "lodash": "^2.4.1",
     "ioredis": "^1.7.1",
     "babel": "^5.8.9",
