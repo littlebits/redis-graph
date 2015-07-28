@@ -22,7 +22,7 @@ GLOBAL.promiseError = (p)->
 
 a.edge = (edge)->
   {pid, sid, data} = edge
-  getEdge(edge)
+  getBetween(edge)
   .spread (sindex, pindex, metadata)->
     a.include sindex, sid, 'SID in PID\'s subscriber index stored in database: subscription subscriber_index'
     a.include pindex, pid, 'PID in SID\'s subscriptions stored in database: subscription subscription_index'
@@ -64,7 +64,7 @@ a.noNode = (id)->
 
 a.noEdge = (link)->
   { pid, sid } = link
-  getEdge(link)
+  getBetween(link)
   .spread (sindex, pindex, edgeData)->
     a.notInclude sindex, sid
     a.notInclude pindex, pid
@@ -89,7 +89,7 @@ isEqualSets = lo.curry (zs, xs)->
     return lo.any zs, (z)->
       if lo.isEqual(x, z) then return true
 
-getEdge = (edge)->
+getBetween = (edge)->
   {pid, sid} = edge
   P.all([
     redis.smembers('graph:from:' + pid),

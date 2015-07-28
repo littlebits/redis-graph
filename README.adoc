@@ -17,75 +17,98 @@ npm install --save @littlebits/redis-graph
 ```
 
 ## API
+
 ### `export default` Graph
 ----
 Graph :: RedisConnection -> GraphAPI
 ----
 
-`RedisConnection` :: An instance of `ioredis`.
+`RedisConnection` :: An instance of link:https://github.com/luin/ioredis[ioredis].
 
-`GraphAPI` :: An API object of all the graph functions that will use the given redis connection.
+`GraphAPI` :: An API object of all the graph functions that will use the given redis connection. The following functions detail this API:
 
-#### forceCreateNode
+#### create
 ----
-forceCreateNode :: ID -> Promise ID
-----
-
-#### forceCreateEdge
-----
-forceCreateEdge :: Edge -> Promise Edge
+create :: Edge -> Promise Edge
 ----
 
-#### createEdge
+Using the endpoints in the given edge create an edge between them using the given edge data. The given edge's publisher/subscriber endpoints will be automatically created if they do not exist.
+
+#### createStrict
 ----
-createEdge :: Edge -> Promise Edge
+createStrict :: Edge -> Promise Edge
 ----
 
-#### updateEdge
-----
-`updateEdge :: Edge -> Promise Edge`
-----
+Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead and error is thrown if either does not exist.
 
-#### getEdges
+#### getBetween
 ----
-getEdges :: NodeExp -> Promise [Edge]
+getBetween :: SID, PID -> Promise Edge
 ----
 
-NodeExp type:
-
-`{ any: ID }` :: Get all edges where node of `ID` is the publisher or the subscriber.
-`{ pid: ID }` :: Get all edges where node of `ID` is the publisher.
-`{ sid: ID }` :: Get all edges where node of `ID` is the subscriber.
-`{ sid: ID1, pid: ID2 }` :: Get the edge where node `ID1` is subscribed to node `ID2`.
-
-
-
-#### getEdge
-----
-getEdge :: SID, PID -> Promise Edge
-----
+Returns the edge between the given endpoints.
 
 #### getFrom
 ----
 getFrom :: PID -> Promise [Edge]
 ----
 
+Returns all edges where the given endpoint is in publisher position.
+
 #### getTo
 ----
 getTo :: SID -> Promise [Edge]
 ----
+
+Returns all edges where the given endpoint is in subscriber position.
 
 #### getAll
 ----
 getAll :: ID -> Promise [Edge]
 ----
 
-#### destroyEdge
+Returns all edges where the given endpoint is in either subscriber or publisher position.
+
+#### update
 ----
-destroyEdge :: SID, PID -> Promise Edge
+update :: Edge -> Promise Edge
 ----
 
-#### destroyNode
+The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data.
+
+#### destroy
 ----
-destroyNode :: ID -> Promise [Edge]
+destroy :: SID, PID -> Promise Edge
 ----
+
+Returns the destroyed edge.
+
+#### endpointDestroy
+----
+endpointDestroy :: ID -> Promise [Edge]
+----
+
+Returns all the edges that were destroyed.
+
+#### endpointCreate
+----
+endpointCreate :: ID -> Promise ID
+----
+
+## Types
+
+#### ID | PID | SID
+```
+String
+```
+
+`PID` is an endpoint in publisher position. `SID` is an endpoint in subscriber position. `ID` is an endpoint that can be in either position.
+
+#### Edge
+```
+{
+  sid: String
+  pid: String
+  data: {}
+}
+```
