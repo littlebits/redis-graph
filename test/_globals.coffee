@@ -8,10 +8,13 @@ G = GLOBAL
 G.a = a
 G.lo = lo
 G.Promise = P
-G.db = P.promisifyAll(require('redis')).createClient()
-G.sub = P.promisifyAll(require('redis')).createClient()
+G.Redis = require('ioredis')
+G.redis = new Redis()
+G.sub = new Redis()
 G.eq = lo.curry (msg, expected, actual)->
   a.deepEqual(actual, expected, msg)
+G.Log = (args1...)-> (args2...)->
+  console.log.apply(console.log, args1.concat(args2))
 
 GLOBAL.promiseError = (p)->
   p.then -> throw new Error 'Promise did not have an error.'
@@ -40,31 +43,29 @@ a.publishes = (expectedData)->
         # eq 'Graph changes published', expectedData, JSON.parse(data)
         clearTimeout(countdown)
         sub.removeListener('message', verify)
-        resolve(sub.unsubscribeAsync('graph:changes'))
+        resolve(sub.unsubscribe('graph:changes'))
     sub.subscribe('graph:changes')
     sub.on('message', verify)
 
 
 
 a.node = (id)->
-  db
-  .existsAsync("graph:node:#{id}")
+  redis
+  .exists("graph:node:#{id}")
   .then(Boolean)
   .tap (exists)-> a.isTrue exists, 'node exists'
 
 a.noNode = (id)->
-  db
-  .existsAsync("graph:node:#{id}")
+  redis
+  .exists("graph:node:#{id}")
   .then(Boolean)
   .then (exists)->
     a.isFalse exists, 'node does not exist'
 
 a.noEdge = (link)->
-  # console.log('check noEdge: %j', link)
   { pid, sid } = link
   getEdge(link)
   .spread (sindex, pindex, edgeData)->
-    # console.log('for %j', link, sindex, pindex, edgeData)
     a.notInclude sindex, sid
     a.notInclude pindex, pid
     a.isNull edgeData, "Destroyed edge"
@@ -91,7 +92,7 @@ isEqualSets = lo.curry (zs, xs)->
 getEdge = (edge)->
   {pid, sid} = edge
   P.all([
-    db.smembersAsync('graph:from:' + pid),
-    db.smembersAsync('graph:to:' + sid),
-    db.getAsync(('graph:fromto:' + pid + ':' + sid)).then(JSON.parse)
+    redis.smembers('graph:from:' + pid),
+    redis.smembers('graph:to:' + sid),
+    redis.get(('graph:fromto:' + pid + ':' + sid)).then(JSON.parse)
   ])

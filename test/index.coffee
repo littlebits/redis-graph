@@ -7,10 +7,10 @@ describe 'Graph', ->
   graph = mockEdge1 = mockEdge2 = mockEdge3 = mockEdges = undefined
 
   afterEach ->
-    db.flushdbAsync()
+    redis.flushdb()
 
   beforeEach ->
-    graph = Graph db: db
+    graph = Graph db: redis
     mockEdge1 = sid:'a', pid:'b', data:foo:'foodata'
     mockEdge2 = sid:'a', pid:'c', data:foo:'zeddata'
     mockEdge3 = sid:'b', pid:'a', data:foo:'bardata'
@@ -68,7 +68,7 @@ describe 'Graph', ->
     it 'creates a graph node', ->
       graph.forceCreateNode 'a'
       .tap eq 'returns the graph node', 'a'
-      .then -> db.existsAsync 'graph:node:a'
+      .then -> redis.exists 'graph:node:a'
       .then eq 'graph node created', 1
 
 
@@ -172,7 +172,7 @@ describe 'Graph', ->
 
   describe '.destroyEdge', ->
 
-    it 'removes edge from db, returns removed edge', ->
+    it 'removes edge from redis, returns removed edge', ->
       destroying = graph.forceCreateEdge(mockEdge1)
       .then -> graph.destroyEdge(mockEdge1)
       .tap eq 'Returns destroyed edge.', mockEdge1
@@ -192,4 +192,3 @@ describe 'Graph', ->
       .each a.noEdge
 
       P.join destroying, a.publishes(mockEdges.map((before)-> before:before, after:null ))
-
