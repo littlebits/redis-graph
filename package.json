@@ -2,14 +2,19 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
-    "start": "mocha --compilers coffee:coffee-script/register --watch"
+    "start": "mocha --compilers coffee:coffee-script/register --watch",
+    "dev": "npm start",
+    "build": "rm -rf build && babel --out-dir build lib",
+    "postversion": "npm publish",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "bluebird": "^2.3.5",
     "chai": "^1.9.2",
     "eslint-config-littlebits": "0.0.1",
-    "joi": "^4.7.0",
+    "joi": "^6.6.1",
     "lodash": "^2.4.1",
+    "ramda": "^0.17.1",
     "redis": "^0.12.1"
   },
   "repository": {
@@ -23,9 +28,10 @@
   },
   "homepage": "https://github.com/littlebits/redis-graph",
   "version": "0.5.0",
-  "main": "./lib/index.js",
+  "main": "./build/index.js",
   "description": "CRUD actions against a graph model built on top of Redis",
   "devDependencies": {
+    "babel": "^5.8.9",
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.5"
   },
