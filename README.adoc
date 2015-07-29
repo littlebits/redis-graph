@@ -16,6 +16,8 @@ toc::[]
 npm install --save @littlebits/redis-graph
 ```
 
+
+
 ## API
 
 ### `export default` Graph
@@ -144,6 +146,8 @@ endpointCreate :: ID -> Promise ID
 
 Creating endpoints is idempotent so no error is thrown if it already exists.
 
+
+
 ## Guide
 
 ### Customizing Key Names
@@ -153,6 +157,7 @@ If you are interested in using custom key names note the following. Individual n
 ### Change Feeds
 
 All graph functions cause their changes to be published via Redis PubSub over a channel that by default is named `graph:changes` (see  <<keynamespace>>). The value published is always a JSON stringified array of <<graphchange>> objects. The model design is based on link:http://rethinkdb.com/docs/changefeeds/javascript/[RethinkDB Change Feeds].
+
 
 ## Types
 
