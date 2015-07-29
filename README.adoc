@@ -28,7 +28,7 @@ Graph :: Settings -> GraphAPI
 Settings :: {...}
 ----
 
-A hash of settings to use and customize the graph API. If you are going to interact with the key settings then be sure to read <<Customizing Key Names>>. If you are just interested in what the key defaults are take a look at the link:https://github.com/littlebits/redis-graph/blob/master/lib/index.js#L20-L24[source code] responsible for resolving it.
+A hash of settings to use and customize the graph API. If you are going to interact with the key settings then be sure to read <<customizing-key-names>>. If you are just interested in what the key defaults are take a look at the link:https://github.com/littlebits/redis-graph/blob/master/lib/index.js#L20-L24[source code] responsible for resolving it.
 
 ##### db
 ----
@@ -69,7 +69,9 @@ Optional. The key pattern for edge data.
 
 
 #### GraphAPI
-
+----
+GraphAPI :: {...}
+----
 An API object of all the graph functions that will use the given redis connection. The following functions detail this API:
 
 ##### create
@@ -148,6 +150,9 @@ Creating endpoints is idempotent so no error is thrown if it already exists.
 
 If you are interested in using custom key names note the following. Individual naming given for a specific key will not have the namespace prefixed. This is so that you have maximum control and we think that customizing the key names is a low-level niche use-case that warrants our no-magic approach. The value given will be processed through link:https://nodejs.org/api/util.html#util_util_format_format[format]. Your key names must supply `%s` interpolation variables where you would like the key variables to be placed in your naming scheme. All keys only require a single interpolation variable except `keyData` which requires two. You may want to review the source code for key names to fully understand the system.
 
+### Change Feeds
+
+All graph functions cause their changes to be published via Redis PubSub over a channel that by default is named `graph:changes` (see  <<keynamespace>>). The value published is always a JSON stringified array of <<graphchange>> objects. The model design is based on link:http://rethinkdb.com/docs/changefeeds/javascript/[RethinkDB Change Feeds].
 
 ## Types
 
@@ -177,4 +182,10 @@ code: 'REDIS_GRAPH_NO_SUCH_EDGE'
 ```
 message: String
 code: 'REDIS_GRAPH_NO_SUCH_ENDPOINT'
+```
+
+#### GraphChange
+```
+before: Null | Edge
+after: Null | Edge
 ```
