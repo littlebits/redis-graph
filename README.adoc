@@ -29,7 +29,7 @@ A hash of settings to use and customize the graph API. If you are going to inter
 ##### `db :: RedisClient`
 *Required*. An instance of link:https://github.com/luin/ioredis[ioredis].
 
-[[keyNamespace]]
+[[keynamespace]]
 ##### `keyNamespace :: String`
 
 Optional. Defaults to `graph`. The key to prefix before all keys entered into Redis. Also used as the channel name prefix where graph changes are published too.
@@ -61,35 +61,35 @@ Using the endpoints in the given edge create an edge between them using the give
 
 ##### `createStrict :: Edge -> Promise Edge`
 
-Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist. Can throw error <<ErrorNoSuchEndpoint>>.
+Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist. Can throw error <<errornosuchendpoint>>.
 
 ##### `getBetween :: SID, PID -> Promise Edge`
 
-Returns the edge between the given endpoints. Can throw error <<ErrorNoSuchEdge>>.
+Returns the edge between the given endpoints. Can throw error <<errornosuchedge>>.
 
 ##### `getFrom :: PID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in publisher position. Can throw error <<ErrorNoSuchEndpoint>>.
+Returns all edges where the given endpoint is in publisher position. Can throw error <<errornosuchendpoint>>.
 
 ##### `getTo :: SID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in subscriber position. Can throw error <<ErrorNoSuchEndpoint>>.
+Returns all edges where the given endpoint is in subscriber position. Can throw error <<errornosuchendpoint>>.
 
 ##### `getAll :: ID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in either subscriber or publisher position. Can throw error <<ErrorNoSuchEndpoint>>.
+Returns all edges where the given endpoint is in either subscriber or publisher position. Can throw error <<errornosuchendpoint>>.
 
 ##### `update :: Edge -> Promise Edge`
 
-The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data. Can throw error <<ErrorNoSuchEdge>>.
+The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data. Can throw error <<errornosuchedge>>.
 
 ##### `destroy :: SID, PID -> Promise Edge`
 
-Returns the destroyed edge. Can throw error <<ErrorNoSuchEdge>>.
+Returns the destroyed edge. Can throw error <<errornosuchedge>>.
 
 ##### `endpointDestroy :: ID -> Promise [Edge]`
 
-Returns all the edges that were destroyed. Can throw error <<ErrorNoSuchEndpoint>>.
+Returns all the edges that were destroyed. Can throw error <<errornosuchendpoint>>.
 
 ##### `endpointCreate :: ID -> Promise ID`
 
