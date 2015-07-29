@@ -20,82 +20,134 @@ npm install --save @littlebits/redis-graph
 
 ### `export default` Graph
 ----
-Graph :: RedisConnection -> GraphAPI
+Graph :: Settings -> GraphAPI
 ----
 
-`RedisConnection` :: An instance of link:https://github.com/luin/ioredis[ioredis].
+#### Settings
+----
+Settings :: {...}
+----
 
-`GraphAPI` :: An API object of all the graph functions that will use the given redis connection. The following functions detail this API:
+A hash of settings to use and customize the graph API. If you are going to interact with the key settings then be sure to read <<Customizing Key Names>>. If you are just interested in what the key defaults are take a look at the link:https://github.com/littlebits/redis-graph/blob/master/lib/index.js#L20-L24[source code] responsible for resolving it.
 
-#### create
+##### db
+----
+db :: RedisClient
+----
+*Required*. An instance of link:https://github.com/luin/ioredis[ioredis].
+
+##### keyNamespace
+----
+keyNamespace :: String
+----
+Optional. Defaults to `graph`. The key to prefix before all keys entered into Redis. Also used as the channel name prefix where graph changes are published too.
+
+##### keyNode
+----
+keyNode :: FormatPattern
+----
+Optional. The key pattern for endpoints.
+
+##### keyFrom
+----
+keyFrom :: FormatPattern
+----
+Optional. The key pattern for a publisher-position endpoint's index of subscriber-position endpoints.
+
+##### keyTo
+----
+keyTo :: FormatPattern
+----
+Optional. The key pattern for a subscriber-position endpoint's index of publisher-position endpoints.
+
+##### keyData
+----
+keyData :: FormatPattern
+----
+Optional. The key pattern for edge data.
+
+
+
+#### GraphAPI
+
+An API object of all the graph functions that will use the given redis connection. The following functions detail this API:
+
+##### create
 ----
 create :: Edge -> Promise Edge
 ----
 
 Using the endpoints in the given edge create an edge between them using the given edge data. The given edge's publisher/subscriber endpoints will be automatically created if they do not exist.
 
-#### createStrict
+##### createStrict
 ----
 createStrict :: Edge -> Promise (Edge | ErrorNoSuchEndpoint)
 ----
 
 Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist.
 
-#### getBetween
+##### getBetween
 ----
 getBetween :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 Returns the edge between the given endpoints.
 
-#### getFrom
+##### getFrom
 ----
 getFrom :: PID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in publisher position.
 
-#### getTo
+##### getTo
 ----
 getTo :: SID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in subscriber position.
 
-#### getAll
+##### getAll
 ----
 getAll :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all edges where the given endpoint is in either subscriber or publisher position.
 
-#### update
+##### update
 ----
 update :: Edge -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data.
 
-#### destroy
+##### destroy
 ----
 destroy :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)
 ----
 
 Returns the destroyed edge.
 
-#### endpointDestroy
+##### endpointDestroy
 ----
 endpointDestroy :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)
 ----
 
 Returns all the edges that were destroyed.
 
-#### endpointCreate
+##### endpointCreate
 ----
 endpointCreate :: ID -> Promise ID
 ----
 
 Creating endpoints is idempotent so no error is thrown if it already exists.
+
+## Guide
+
+### Customizing Key Names
+
+If you are interested in using custom key names note the following. Individual naming given for a specific key will not have the namespace prefixed. This is so that you have maximum control and we think that customizing the key names is a low-level niche use-case that warrants our no-magic approach. The value given will be processed through link:https://nodejs.org/api/util.html#util_util_format_format[format]. Your key names must supply `%s` interpolation variables where you would like the key variables to be placed in your naming scheme. All keys only require a single interpolation variable except `keyData` which requires two. You may want to review the source code for key names to fully understand the system.
+
 
 ## Types
 
