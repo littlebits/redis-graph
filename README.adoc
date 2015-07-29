@@ -58,37 +58,37 @@ An API object of all the graph functions that will use the given redis connectio
 
 Using the endpoints in the given edge create an edge between them using the given edge data. The given edge's publisher/subscriber endpoints will be automatically created if they do not exist.
 
-##### `createStrict :: Edge -> Promise (Edge | ErrorNoSuchEndpoint)`
+##### `createStrict :: Edge -> Promise Edge`
 
-Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist.
+Same as `create` except the given edge's publisher/subscriber endpoints are not automatically created; Instead a `ErrorNoSuchEndpoint` is thrown if either does not exist. Can throw error <<ErrorNoSuchEndpoint>>.
 
-##### `getBetween :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)`
+##### `getBetween :: SID, PID -> Promise Edge`
 
-Returns the edge between the given endpoints.
+Returns the edge between the given endpoints. Can throw error <<ErrorNoSuchEdge>>.
 
-##### `getFrom :: PID -> Promise ([Edge] | ErrorNoSuchEndpoint)`
+##### `getFrom :: PID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in publisher position.
+Returns all edges where the given endpoint is in publisher position. Can throw error <<ErrorNoSuchEndpoint>>.
 
-##### `getTo :: SID -> Promise ([Edge] | ErrorNoSuchEndpoint)`
+##### `getTo :: SID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in subscriber position.
+Returns all edges where the given endpoint is in subscriber position. Can throw error <<ErrorNoSuchEndpoint>>.
 
-##### `getAll :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)`
+##### `getAll :: ID -> Promise [Edge]`
 
-Returns all edges where the given endpoint is in either subscriber or publisher position.
+Returns all edges where the given endpoint is in either subscriber or publisher position. Can throw error <<ErrorNoSuchEndpoint>>.
 
-##### `update :: Edge -> Promise (Edge | ErrorNoSuchEdge)`
+##### `update :: Edge -> Promise Edge`
 
-The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data.
+The endpoints in the given edge will be used to lookup the current edge and once found the current edge data will be replaced with the given edge's data. Can throw error <<ErrorNoSuchEdge>>.
 
-##### `destroy :: SID, PID -> Promise (Edge | ErrorNoSuchEdge)`
+##### `destroy :: SID, PID -> Promise Edge`
 
-Returns the destroyed edge.
+Returns the destroyed edge. Can throw error <<ErrorNoSuchEdge>>.
 
-##### `endpointDestroy :: ID -> Promise ([Edge] | ErrorNoSuchEndpoint)`
+##### `endpointDestroy :: ID -> Promise [Edge]`
 
-Returns all the edges that were destroyed.
+Returns all the edges that were destroyed. Can throw error <<ErrorNoSuchEndpoint>>.
 
 ##### `endpointCreate :: ID -> Promise ID`
 
