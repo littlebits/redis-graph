@@ -29,6 +29,7 @@ A hash of settings to use and customize the graph API. If you are going to inter
 ##### `db :: RedisClient`
 *Required*. An instance of link:https://github.com/luin/ioredis[ioredis].
 
+[[keyNamespace]]
 ##### `keyNamespace :: String`
 
 Optional. Defaults to `graph`. The key to prefix before all keys entered into Redis. Also used as the channel name prefix where graph changes are published too.
