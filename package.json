@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "bluebird": "^2.3.5",
-    "ramda": "^0.17.1",
-    "joi": "^6.6.1"
+    "joi": "^6.6.1",
+    "ramda": "^0.17.1"
   },
   "repository": {
     "type": "git",
