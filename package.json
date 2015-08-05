@@ -2,10 +2,10 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
-    "start": "mocha --compilers coffee:coffee-script/register --watch",
+    "start": "npm test -- --watch",
     "dev": "npm start",
     "build": "rm -rf build && babel --out-dir build lib",
-    "postversion": "npm publish",
+    "postversion": "git push && git push --tags && npm publish",
     "prepublish": "npm run build"
   },
   "dependencies": {
