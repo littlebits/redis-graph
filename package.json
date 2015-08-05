@@ -11,6 +11,7 @@
   "dependencies": {
     "bluebird": "^2.3.5",
     "joi": "^6.6.1",
+    "lodash.isequal": "^3.0.4",
     "ramda": "^0.17.1"
   },
   "repository": {
@@ -27,13 +28,13 @@
   "main": "./build/index.js",
   "description": "CRUD actions against a graph model built on top of Redis",
   "devDependencies": {
-    "eslint-config-littlebits": "0.0.1",
-    "chai": "^1.9.2",
-    "lodash": "^2.4.1",
-    "ioredis": "^1.7.1",
     "babel": "^5.8.9",
+    "chai": "^3.2.0",
     "coffee-script": "^1.8.0",
-    "mocha": "^1.21.5"
+    "eslint-config-littlebits": "0.0.1",
+    "ioredis": "^1.7.1",
+    "mocha": "^1.21.5",
+    "most": "^0.14.0"
   },
   "bugs": {
     "url": "https://github.com/littlebits/redis-graph/issues"
